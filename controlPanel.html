@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Control Panel - CueProjections</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  #cueList { max-height: 300px; overflow-y: auto; }
+  .cue-item { padding: 5px; border-bottom: 1px solid #ccc; cursor: pointer; }
+  .cue-item.active { background-color: #def; font-weight: bold; }
+  .preview-container { display: flex; gap: 2em; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="main-container">
+  <h1>Control Panel</h1>
+  <h3 id="currentCueTitle">Cue 0</h3>
+
+  <div class="preview-container">
+    <div>
+      <h4>Current Cue Preview</h4>
+      <div id="currentPreview"></div>
+    </div>
+    <div>
+      <h4>Next Cue Preview</h4>
+      <div id="nextPreview"></div>
+    </div>
+  </div>
+
+  <button onclick="prevCue()">Back</button>
+  <button onclick="goCue()">GO</button>
+  <button ondblclick="toggleBlackout()">Blackout (double-click)</button>
+
+  <h3>Cue List</h3>
+  <div id="cueList"></div>
+</div>
+
+<script>
+let cues = JSON.parse(localStorage.getItem('currentShowCues') || '[]');
+let currentCueIndex = 0;
+
+function renderCueList() {
+  const list = document.getElementById('cueList');
+  list.innerHTML = '';
+  cues.forEach((cue, i) => {
+    const div = document.createElement('div');
+    div.className = 'cue-item' + (i === currentCueIndex ? ' active' : '');
+    div.textContent = `${i+1}. ${cue.title}`;
+    div.onclick = () => {
+      if(confirm(`Go to cue ${i+1}?`)) {
+        currentCueIndex = i;
+        updatePreviews();
+      }
+    };
+    list.appendChild(div);
+  });
+}
+
+function updatePreviews() {
+  document.getElementById('currentCueTitle').innerText = `Cue ${currentCueIndex}: ${cues[currentCueIndex]?.title}`;
+  document.getElementById('currentPreview').innerHTML = cues[currentCueIndex]?.file ? `<img src="assets/${cues[currentCueIndex].file}" style="max-width:200px;">` : '';
+  document.getElementById('nextPreview').innerHTML = cues[currentCueIndex+1]?.file ? `<img src="assets/${cues[currentCueIndex+1].file}" style="max-width:200px;">` : '';
+  renderCueList();
+}
+
+function goCue() { if(currentCueIndex < cues.length-1) { currentCueIndex++; updatePreviews(); } }
+function prevCue() { if(currentCueIndex > 0) { currentCueIndex--; updatePreviews(); } }
+function toggleBlackout() { alert('Blackout toggled!'); }
+
+updatePreviews();
+</script>
+</body>
+</html>
