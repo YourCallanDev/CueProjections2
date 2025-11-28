@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel - CueProjections</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="main-container">
+  <h1>Admin Panel</h1>
+  <h3>Users</h3>
+  <select id="userSelect"></select>
+  <h3>Shows</h3>
+  <select id="showSelect"></select>
+
+  <button id="assignBtn">Assign Show</button>
+  <button id="removeBtn">Remove Show</button>
+</div>
+
+<script>
+// Example users and shows - in future use Firebase
+let users = ['callan', 'customer2', 'customer3', 'admin'];
+let shows = ['RigCheck', 'Trashion'];
+
+const userSelect = document.getElementById('userSelect');
+const showSelect = document.getElementById('showSelect');
+
+users.forEach(u => userSelect.appendChild(new Option(u,u)));
+shows.forEach(s => showSelect.appendChild(new Option(s,s)));
+
+document.getElementById('assignBtn').onclick = () => {
+  alert(`Assigned ${showSelect.value} to ${userSelect.value}`);
+};
+document.getElementById('removeBtn').onclick = () => {
+  alert(`Removed ${showSelect.value} from ${userSelect.value}`);
+};
+</script>
+</body>
+</html>
