@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Viewer - CueProjections Prototype</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    html,body{height:100%;margin:0;background:black;overflow:hidden}
+    #stage{width:100%;height:100%;position:relative;background:black}
+    .media{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:100%;max-height:100%;opacity:0;transition:opacity 1s}
+    .active{opacity:1}
+    #blackout{position:absolute;top:0;left:0;right:0;bottom:0;background:black;opacity:0;pointer-events:none;transition:opacity 1.2s}
+    #fsBtn{position:fixed;right:12px;top:12px;padding:8px 10px;border-radius:6px;background:rgba(255,255,255,0.06);color:#fff;border:none;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div id="blackout"></div>
+  </div>
+  <button id="fsBtn">Fullscreen</button>
+  <script>
+    const stage = document.getElementById('stage');
+    const blackout = document.getElementById('blackout');
+    const fsBtn = document.getElementById('fsBtn');
+    // show colourgrid on open
+    const startImg = document.createElement('img'); startImg.src = 'assets/colourgrid.png'; startImg.className='media active'; stage.appendChild(startImg);
+
+    function clearOld() {
+      const els = Array.from(stage.querySelectorAll('.media'));
+      els.forEach(el => {
+        el.classList.remove('active');
+        // remove after transition
+        setTimeout(()=> el.remove(), 1100);
+      });
+    }
+
+    function showPayload(msg) {
+      if(msg.blackout) {
+        blackout.style.opacity = '1';
+        clearOld();
+        return;
+      } else {
+        blackout.style.opacity = '0';
+      }
+
+      if(msg.cue) {
+        // image or video
+        if(msg.cue.toLowerCase().endsWith('.mp4')) {
+          const v = document.createElement('video');
+          v.src = msg.cue; v.className = 'media'; v.autoplay = msg.autoplay !== false; v.loop = msg.loop === true; v.muted = true; v.playsInline = true;
+          stage.appendChild(v);
+          // apply transition class from parent CSS—simple fade for demo
+          requestAnimationFrame(()=> v.classList.add('active'));
+        } else {
+          const img = document.createElement('img'); img.src = msg.cue; img.className='media';
+          stage.appendChild(img);
+          requestAnimationFrame(()=> img.classList.add('active'));
+        }
+      } else if(msg.color) {
+        const div = document.createElement('div'); div.className='media'; div.style.width='100%'; div.style.height='100%'; div.style.background=msg.color;
+        stage.appendChild(div);
+        requestAnimationFrame(()=> div.classList.add('active'));
+      } else if(msg.text) {
+        const t = document.createElement('div'); t.className='media'; t.style.color='#fff'; t.style.fontSize='48px'; t.textContent = msg.text;
+        stage.appendChild(t);
+        requestAnimationFrame(()=> t.classList.add('active'));
+      }
+    }
+
+    window.addEventListener('message', (ev) => {
+      const data = ev.data || {};
+      // if blackout present, handle it
+      if(data.blackout) {
+        blackout.style.opacity = '1';
+        clearOld();
+        return;
+      }
+      // fade out current, then show new payload
+      clearOld();
+      setTimeout(()=> showPayload(data), 100); // small delay to allow crossfade; adjust for desired effect
+    });
+
+    fsBtn.addEventListener('click', ()=> {
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    });
+  </script>
+</body>
+</html>
