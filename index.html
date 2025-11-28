@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CueProjections Prototype — Dark Theatre</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- SortableJS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">CueProjections Prototype</div>
+      <nav class="nav">
+        <button data-page="showmaker" class="nav-btn active">Show Maker</button>
+        <button data-page="control" class="nav-btn">Control Panel</button>
+        <button data-page="viewer" class="nav-btn">Open Viewer</button>
+        <button data-page="admin" class="nav-btn">Admin (mock)</button>
+      </nav>
+      <div class="right-actions">
+        <label class="rehearsal-toggle"><input type="checkbox" id="rehearseToggle"> Rehearsal</label>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- SHOW MAKER -->
+      <section id="page-showmaker" class="page">
+        <div class="col left">
+          <h3>Shows</h3>
+          <ul id="showsList" class="shows-list"></ul>
+          <div class="show-controls">
+            <input id="newShowTitle" placeholder="New show title" />
+            <button id="btnNewShow">New Show</button>
+            <button id="btnExportShow">Export</button>
+            <input id="importShowFile" type="file" accept=".json" />
+          </div>
+
+          <div class="show-settings">
+            <h4>Show Settings</h4>
+            <label>Title <input id="showTitleInput" /></label>
+            <label>Default transition
+              <select id="defaultTransition">
+                <option value="cut">Cut</option>
+                <option value="fade2">Fade (2s)</option>
+                <option value="fade5">Fade (5s)</option>
+                <option value="crossfade">Crossfade</option>
+                <option value="slideRight">Slide Right</option>
+                <option value="slideLeft">Slide Left</option>
+                <option value="slideUp">Slide Up</option>
+                <option value="slideDown">Slide Down</option>
+                <option value="zoomIn">Zoom In</option>
+                <option value="zoomOut">Zoom Out</option>
+                <option value="flip">Flip</option>
+                <option value="blur">Blur</option>
+                <option value="rotate">Rotate</option>
+                <option value="pixelate">Pixelate</option>
+                <option value="wipe">Wipe</option>
+                <option value="dissolve">Dissolve</option>
+              </select>
+            </label>
+            <button id="saveShowSettings">Save</button>
+          </div>
+        </div>
+
+        <div class="col center">
+          <h3>Cue List</h3>
+          <div class="cue-toolbar">
+            <button id="btnAddImage">Add Image Cue</button>
+            <button id="btnAddVideo">Add Video Cue</button>
+            <button id="btnAddColor">Add Color Cue</button>
+            <button id="btnAddText">Add Text Cue</button>
+            <button id="btnPreviewCue">Preview Selected</button>
+            <input id="uploadAsset" type="file" accept="image/*,video/*" />
+          </div>
+
+          <ul id="cueList" class="cue-list"></ul>
+        </div>
+
+        <div class="col right">
+          <h3>Cue Editor</h3>
+          <div id="cueEditor" class="cue-editor">Select a cue to edit</div>
+
+          <h4>Asset Manager</h4>
+          <div id="assetGrid" class="asset-grid"></div>
+        </div>
+      </section>
+
+      <!-- CONTROL PANEL -->
+      <section id="page-control" class="page hidden">
+        <div class="control-top">
+          <div>
+            <label>Current Show:
+              <select id="controlShowSelect"></select>
+            </label>
+            <button id="openMultiViewer">Open 2 Viewers</button>
+            <button id="openManyViewers">Open 4 Viewers</button>
+          </div>
+
+          <div class="control-actions">
+            <button id="prevCueBtn">Back</button>
+            <button id="goCueBtn" class="go">GO</button>
+            <button id="blackoutBtn" class="blackout">Blackout</button>
+            <button id="endShowBtn">End Show</button>
+          </div>
+        </div>
+
+        <div class="control-body">
+          <div class="preview-pane">
+            <h4>Current Preview</h4>
+            <div id="currentPreview" class="preview-box"></div>
+          </div>
+
+          <div class="control-cuelist-area">
+            <h4>Full Cue List</h4>
+            <ul id="controlCueList" class="control-cue-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN MOCK -->
+      <section id="page-admin" class="page hidden">
+        <h3>Admin (mock)</h3>
+        <p>This panel simulates user & show assignment for demo purposes.</p>
+        <div id="adminUsers"></div>
+      </section>
+    </main>
+
+    <footer class="footer">Prototype — Dark Theatre Theme • Not backed by Firebase (UI-only)</footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
