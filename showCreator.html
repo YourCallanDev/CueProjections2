@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Show Creator - CueProjections</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .cue-item { padding: 5px; border-bottom: 1px solid #ccc; cursor: pointer; }
+  .cue-item.active { background-color: #def; }
+  .cue-list { max-height: 300px; overflow-y: auto; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="main-container">
+  <h1>Show Creator</h1>
+  <input type="text" id="showName" placeholder="Enter show name">
+  <button onclick="createShow()">Create New Show</button>
+
+  <h3>Cues</h3>
+  <div id="cueList" class="cue-list"></div>
+  <button onclick="addCue()">Add Cue</button>
+
+  <h3>Cue Details</h3>
+  <input type="text" id="cueTitle" placeholder="Cue Title">
+  <input type="text" id="cueFile" placeholder="File name (image/video)">
+  <select id="cueTransition">
+    <option value="cut">Cut</option>
+    <option value="fade2">Fade 2s</option>
+    <option value="fade5">Fade 5s</option>
+    <option value="slideRight">Slide Right</option>
+    <option value="slideLeft">Slide Left</option>
+    <option value="slideUp">Slide Up</option>
+    <option value="slideDown">Slide Down</option>
+    <option value="zoomIn">Zoom In</option>
+    <option value="zoomOut">Zoom Out</option>
+    <option value="flip">Flip</option>
+    <option value="blur">Blur</option>
+    <option value="rotate">Rotate</option>
+    <option value="pixelate">Pixelate</option>
+    <option value="wipe">Wipe</option>
+    <option value="dissolve">Dissolve</option>
+  </select>
+  <textarea id="cueNotes" placeholder="Cue notes"></textarea>
+  <button onclick="updateCue()">Update Cue</button>
+</div>
+
+<script>
+let cues = [];
+let selectedCueIndex = null;
+
+function renderCueList() {
+  const list = document.getElementById('cueList');
+  list.innerHTML = '';
+  cues.forEach((cue, i) => {
+    const div = document.createElement('div');
+    div.className = 'cue-item' + (i === selectedCueIndex ? ' active' : '');
+    div.textContent = `${i + 1}. ${cue.title || 'Untitled'} (${cue.file || 'no file'})`;
+    div.onclick = () => selectCue(i);
+    list.appendChild(div);
+  });
+}
+
+function selectCue(index) {
+  selectedCueIndex = index;
+  document.getElementById('cueTitle').value = cues[index].title || '';
+  document.getElementById('cueFile').value = cues[index].file || '';
+  document.getElementById('cueTransition').value = cues[index].transition || 'cut';
+  document.getElementById('cueNotes').value = cues[index].notes || '';
+  renderCueList();
+}
+
+function addCue() {
+  cues.push({ title: '', file: '', transition: 'cut', notes: '' });
+  selectedCueIndex = cues.length - 1;
+  renderCueList();
+}
+
+function updateCue() {
+  if (selectedCueIndex === null) return;
+  cues[selectedCueIndex] = {
+    title: document.getElementById('cueTitle').value,
+    file: document.getElementById('cueFile').value,
+    transition: document.getElementById('cueTransition').value,
+    notes: document.getElementById('cueNotes').value
+  };
+  renderCueList();
+}
+
+function createShow() {
+  const showName = document.getElementById('showName').value.trim();
+  if (!showName) return alert('Enter show name');
+  // Save to Firebase later
+  alert(`Show "${showName}" created with ${cues.length} cues!`);
+}
+
+renderCueList();
+</script>
+</body>
+</html>
